@@ -1,0 +1,70 @@
+<idea-plugin>
+    <id>com.plagiarismcheckerx.plagx-writing-companion</id>
+    <name>Plagx Writing Companion</name>
+    <vendor url="https://plagiarismcheckerx.com/?utm_source=plagx-jetbrains">Plagiarism Checker X</vendor>
+
+    <description><![CDATA[
+<p>Free academic writing checks for essays, theses and papers written in Markdown, plain text or LaTeX:
+citations and reference lists, BibTeX files, word limits, basic grammar and punctuation, and writing readiness.</p>
+
+<h3>Features</h3>
+<ul>
+  <li><b>Draft checks as you type</b> in <code>.md</code>, <code>.txt</code> and <code>.tex</code> files: in-text citations
+    with no reference entry, references never cited, word limits, punctuation, repeated words, <i>a/an</i>,
+    sentence capitals, long sentences and required headings. Many suggestions have a quick fix (<kbd>Alt+Enter</kbd>).</li>
+  <li><b>Writing readiness</b> in the status bar: word count, reading time, and Ready / Not ready.</li>
+  <li><b>BibTeX:</b> duplicate entries, missing authors, titles and years, and invalid DOIs are highlighted in
+    <code>.bib</code> files. Format a <code>.bib</code> file as an APA reference list or MLA Works Cited page.</li>
+  <li><b>Insert Reference from DOI:</b> formatted reference, in-text or narrative citation.</li>
+</ul>
+<p>Commands are in <b>Tools | Plagx</b>. Settings: <b>Settings | Tools | Plagx Writing Companion</b>
+(APA or MLA, word limits, required headings, checks, file types).</p>
+
+<p>All checks run locally; your text is never uploaded. Only <i>Insert Reference from DOI</i> and the online
+DOI check contact the public Crossref API.</p>
+
+<p>By Plagiarism Checker X. For full plagiarism checks and AI-generated text detection, visit
+<a href="https://plagiarismcheckerx.com/?utm_source=plagx-jetbrains">Text Similarity Detector</a>.
+This free plugin does not detect plagiarism or AI-generated text.</p>
+]]></description>
+
+    <change-notes><![CDATA[
+<p>0.1.0: first release.</p>
+]]></change-notes>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="com.plagiarismcheckerx.plagx.jetbrains.PlagxSettings"/>
+        <applicationConfigurable parentId="tools" instance="com.plagiarismcheckerx.plagx.jetbrains.PlagxConfigurable"
+                                 id="com.plagiarismcheckerx.plagx.settings" displayName="Plagx Writing Companion"/>
+
+        <localInspection shortName="PlagxDraft" displayName="Draft checks (citations, word limits, grammar, punctuation)"
+                         groupName="Plagx Writing Companion" enabledByDefault="true" level="WARNING"
+                         implementationClass="com.plagiarismcheckerx.plagx.jetbrains.DraftInspection"/>
+        <localInspection shortName="PlagxBibTeX" displayName="BibTeX reference checks"
+                         groupName="Plagx Writing Companion" enabledByDefault="true" level="WARNING"
+                         implementationClass="com.plagiarismcheckerx.plagx.jetbrains.BibInspection"/>
+
+        <statusBarWidgetFactory id="PlagxReadiness" order="first"
+                                implementation="com.plagiarismcheckerx.plagx.jetbrains.ReadinessWidget$Factory"/>
+        <notificationGroup id="Plagx Writing Companion" displayType="BALLOON"/>
+    </extensions>
+
+    <actions>
+        <group id="Plagx.Menu" text="Plagx" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action id="Plagx.CheckDraft" class="com.plagiarismcheckerx.plagx.jetbrains.CheckDraftAction"
+                    text="Check Draft" description="Re-run Plagx checks on the current file"/>
+            <action id="Plagx.ShowReadiness" class="com.plagiarismcheckerx.plagx.jetbrains.ShowReadinessAction"
+                    text="Show Writing Readiness" description="Word count, reading time, readability and readiness"/>
+            <separator/>
+            <action id="Plagx.FormatBibliography" class="com.plagiarismcheckerx.plagx.jetbrains.BibActions$Format"
+                    text="Format BibTeX as Reference List" description="Format the current .bib file as APA or MLA"/>
+            <action id="Plagx.CheckBibOnline" class="com.plagiarismcheckerx.plagx.jetbrains.BibActions$CheckOnline"
+                    text="Check BibTeX References Online" description="Check references and verify DOIs on Crossref"/>
+            <action id="Plagx.CiteDoi" class="com.plagiarismcheckerx.plagx.jetbrains.CiteDoiAction"
+                    text="Insert Reference from DOI" description="Insert a formatted reference or citation for a DOI"/>
+        </group>
+    </actions>
+</idea-plugin>
